@@ -14,7 +14,7 @@ function preload(){
   redghostImage = loadImage('redghost.png');
   pinkghostImage = loadImage('pinkghost.png');
   greenghostImage = loadImage('greenghost.jpg');
-  yelowghostImage = loadImage('yellowghost.png');
+  yellowghostImage = loadImage('yellowghost.png');
   skyblueghostImage = loadImage('skyblueghost.png');
   fireballImage = loadImage('fireball.png');
   backgroundImage = loadImage('backgroundImg.jpg');
@@ -24,17 +24,10 @@ function preload(){
 
 function setup(){
   //creating the canvas
-  createCanvas(800, 800);
-  
-  //creating the background image
-  background1=createSprite(0,0,800,800);
-  background1.addImage(backgroundImage);
-  background1.scale= 2.5;
-  background1.x=background1.width/2;
-  background1.velocityX=-4;
+  createCanvas(800, 600);
   
   //creating the pacman sprite
-  pacman = createSprite(250, 230, 20, 20);
+  pacman = createSprite(180, 300, 20, 20);
   pacman.addImage(pacmanImage);
   pacman.scale = 0.08;
   pacman.setCollider("rectangle", 0, 0, 90, 90);
@@ -48,6 +41,7 @@ function setup(){
 }
 
 function draw(){
+  background(backgroundImage);
   //text size and colour
   textSize(20);
   fill('lightgreen');
@@ -56,11 +50,15 @@ function draw(){
   if(gameState === PLAY) {
     //calling the functions
     ghosts();
-   // fireballs();
+    fireballs();
     
     //changing the position of pacman
-    if(keyCode === 38){
-      pacman.velocityY = pacman.velocityY -4
+    if(pacman.y > 50 && keyDown("up") ){
+      pacman.y = pacman.y -4
+    }
+    
+    if(keyDown("down") && pacman.y<550){
+      pacman.y = pacman.y +4
     }
       
     //destroying the ghosts after touching pacman
@@ -113,23 +111,24 @@ function reset(){
 
 //function to make the ghosts appear randomly
 function ghosts() {
-  if (World.frameCount % 80 === 0) {
+  if (frameCount % 80 === 0) {
     var ghost = createSprite(400, 200, 20, 20);
     ghost.scale = 0.2;
-    if (ghost === 1) {
+    var rand = Math.round(random(1,5));
+    if (rand === 1) {
       ghost.addImage(redghostImage);
-    } else if (ghost === 2) {
-      ghost.addImage(pinkghostImage);
-    } else if (ghost === 3) {
-      ghost.addImage(greenghostImage);
-    } else if (ghost === 4) {
+    } else if (rand === 2) {
+     ghost.addImage(pinkghostImage);
+    } else if (rand === 3) {
+     ghost.addImage(greenghostImage);
+    } else if (rand === 4) {
       ghost.addImage(skyblueghostImage);
-    } else {
-      ghost.addImage(yellowghostImage); 
+    } else if(rand ===5) {
+     ghost.addImage(yellowghostImage); 
     }
     ghost.y=Math.round(random(80, 500));
     
-    //assigning lifetime and velocity to the fruits        
+    //assigning lifetime and velocity to the ghosts        
     ghost.lifetime = 250;
     ghost.velocityX = -7;
     
@@ -140,7 +139,7 @@ function ghosts() {
 
 //function to make fireballs appear randomly
 function fireballs() {
-  if(World.frameCount % 75 === 0){
+  if(frameCount % 75 === 0){
     obstacle = createSprite(400, 200, 20, 20);
     obstacle.addImage(fireballImage);
     obstacle.scale = 0.3;
